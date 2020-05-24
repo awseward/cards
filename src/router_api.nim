@@ -18,8 +18,9 @@ router api:
   template ensureUserId(): string =
     const key = "User-Id"
     if not request.headers.hasKey key: halt Http401
-
-    request.headers["User-Id"]
+    let userId = request.headers[key]
+    if userId == "_": halt Http401
+    userId
 
   get "games":
     let userId = ensureUserId()
@@ -27,7 +28,7 @@ router api:
 
   post "games":
     let userId = ensureUserId()
-    let game = initGame()
+    let game = initGame(userId)
     let jsonNode = %game
     jsonNode["status"] = %(getGameStatus game)
     okJson jsonNode

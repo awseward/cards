@@ -22,11 +22,11 @@ proc `%`*(datetime: DateTime): JsonNode =
 
 let databaseUrl = getEnv "DATABASE_URL"
 
-proc initGame*(): Game =
-  let query = sql"INSERT INTO games DEFAULT VALUES"
+proc initGame*(creatorId: string): Game =
+  let query = sql"INSERT INTO games (created_by_user_id) VALUES (?)"
   let conn = open("", "", "", databaseUrl)
   try:
-    let id = int(conn.insertId query)
+    let id = int conn.insertId(query, creatorId)
     let createdAt = block:
       let value = conn.getValue sql(
         """
