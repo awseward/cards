@@ -2,6 +2,10 @@ import asyncdispatch
 import jester
 import os
 import strutils
+import oids
+
+proc genUserId*(): string =
+  $genOid()
 
 const isHeroku* = block:
   const key = "IS_HEROKU"
@@ -39,6 +43,10 @@ when isHeroku:
 else:
   router web:
     get "/":
+      block:
+        let cookies = request.cookies
+        if not cookies.hasKey("user_id") or cookies["user_id"] == "":
+          setCookie("user_id", genUserId(), daysForward(365 * 1000))
       # Ehhh this isn't awesome, but it works for now especially since it's
       # just local dev that it affects.
       redirect "/index.html"
