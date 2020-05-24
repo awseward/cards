@@ -11,9 +11,10 @@ bin           = @["web"]
 
 # Dependencies
 
-requires "nim >= 1.2.0"
 requires "jester >= 0.4.3"
+requires "nim >= 1.2.0"
 requires "nimassets >= 0.1.0"
+requires "ulid >= 0.3.0"
 
 
 
@@ -28,3 +29,6 @@ task svelte, "Generate svelte bundle":
 
 task assets, "Generate packaged assets":
   exec "mkdir -vp src/views && echo src/views/assets_file.nim | xargs -t -I{} nimassets --dir=public --output={}"
+
+task pretty, "Run nimpretty on all .nim files in the repo":
+  exec "find . -type f -not -name 'assets_file.nim' -name '*.nim' | xargs -n1 nimpretty --indent:2 --maxLineLen:120"
