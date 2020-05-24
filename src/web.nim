@@ -7,6 +7,7 @@ import strutils
 
 import ./router_web
 import ./router_api
+import ./models/game
 
 let settings = newSettings()
 block setPort:

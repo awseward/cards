@@ -7,8 +7,6 @@ import ulid
 
 import ./models/game
 
-var games*: seq[Game] = @[initGame(), initGame()]
-
 router api:
   template okText(thing: untyped): untyped =
     resp Http200, {"Content-Type": "text/plain"}, $thing
@@ -16,11 +14,10 @@ router api:
     resp Http200, {"Content-Type": "application/json"}, $ %json
 
   get "games":
-    okJson games
+    okJson getGames()
 
   post "games":
     let game = initGame()
-    games.add game
     let jsonNode = %game
     jsonNode["status"] = %(getGameStatus game)
     okJson jsonNode
