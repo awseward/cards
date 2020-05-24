@@ -37,7 +37,7 @@
   <option disabled selected value> -- select a game -- </option>
   {#each games as game}
     <option value={game}>
-      {game.id} {game.created_at}
+      Game {game.id}
     </option>
   {/each}
 </select>
