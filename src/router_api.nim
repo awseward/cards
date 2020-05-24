@@ -5,27 +5,7 @@ import sequtils
 import times
 import ulid
 
-type Status* = enum
-  pending,
-  going,
-  done
-
-type Game* = object
-  id*: int
-  created_at*: DateTime
-
-proc `%`*(datetime: DateTime): JsonNode =
-  % $datetime
-
-proc initGame*(): Game =
-  Game(
-    id: 4, # This is just temporary
-    created_at: now()
-  )
-
-proc getGameStatus*(game: Game): Status =
-  # FIXME: Look up relevant details and determine status
-  pending
+import ./models/game
 
 var games*: seq[Game] = @[initGame(), initGame()]
 
