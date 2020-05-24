@@ -4,7 +4,7 @@
     const res = await fetch(`/api/game/${selectedGame.id}`);
     const text = await res.text();
     // TODO: Don't forget to remove this
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // await new Promise(resolve => setTimeout(resolve, 500));
 
     if (res.ok) {
       return text;
