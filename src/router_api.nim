@@ -24,11 +24,11 @@ router api:
 
   get "games":
     let userId = ensureUserId()
-    okJson getGames()
+    okJson getGamesUserIsIn(userId)
 
   post "games":
     let userId = ensureUserId()
-    let game = initGame(userId)
+    let game = initGame userId
     let jsonNode = %game
     jsonNode["status"] = %(getGameStatus game)
     okJson jsonNode
