@@ -2,17 +2,17 @@ import asyncdispatch
 import jester
 import os
 import strutils
-import oids
 
-proc genUserId*(): string =
-  $genOid()
+import ./models/user
 
 const expirationDays = 365 * 1000
 
 template ensureUserId*(request: untyped): untyped =
   let cookies = request.cookies
   if not cookies.hasKey("user_id") or cookies["user_id"] == "":
-    setCookie("user_id", genUserId(), daysForward(expirationDays))
+    setCookie("user_id", initUser().userId, daysForward(expirationDays))
+  else:
+    discard initUser cookies["user_id"]
 
 const isHeroku* = block:
   const key = "IS_HEROKU"
