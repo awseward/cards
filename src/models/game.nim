@@ -5,6 +5,8 @@ import sequtils
 import strutils
 import times
 
+import ../timeutils
+
 type GameStatus* = enum
   pending,
   going,
@@ -31,8 +33,7 @@ SELECT
   TO_JSON(DATE_TRUNC('SECOND', created_at))#>>'{}'
 FROM games
 WHERE id = $1""" % [$id])
-      let format = initTimeFormat "yyyy-MM-dd'T'HH:mm:ss'+00:00'"
-      times.parse(value, format, utc())
+      parseUtcIso8601 value
     Game(
       id: id,
       createdAt: createdAt
@@ -46,9 +47,7 @@ proc getGameStatus*(game: Game): GameStatus =
 
 proc fromDbRow(row: Row): Game =
   let id = parseInt row[0]
-  let createdAt = block:
-    let format = initTimeFormat "yyyy-MM-dd'T'HH:mm:ss'+00:00'"
-    times.parse(row[1], format, utc())
+  let createdAt = parseUtcIso8601 row[1]
 
   Game(id: id, createdAt: createdAt)
 

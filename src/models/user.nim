@@ -6,6 +6,8 @@ import sequtils
 import strutils
 import times
 
+import ../timeutils
+
 let databaseUrl = getEnv "DATABASE_URL"
 
 type User* = object
@@ -19,10 +21,7 @@ ON CONFLICT DO NOTHING
 RETURNING TO_JSON(DATE_TRUNC('SECOND', created_at))#>>'{}' AS created_at"""
   let conn = open("", "", "", databaseUrl)
   try:
-    let createdAt = block:
-      let value = conn.getValue(query, userId)
-      let format = initTimeFormat "yyyy-MM-dd'T'HH:mm:ss'+00:00'"
-      times.parse(value, format, utc())
+    let createdAt = parseUtcIso8601 conn.getValue(query, userId)
     User(userId: userId, createdAt: createdAt)
   finally:
     close conn
