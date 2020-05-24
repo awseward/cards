@@ -2,10 +2,21 @@
   import GamePicker from './GamePicker.svelte';
   import GameDisplay from './GameDisplay.svelte';
   let selectedGame;
+  let userId = getUserId();
+
+  function getUserId() {
+    let found = document.cookie.split('; ').map(str => str.split('=')).filter(arr => arr[0] == 'user_id');
+    return found
+      ? found[0][1]
+      : null
+    ;
+  }
 </script>
 
 <main>
   <p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+
+  <p><strong>User ID:</strong> {userId}</p>
 
   <GamePicker bind:selectedGame />
   <GameDisplay selectedGame={selectedGame} />
