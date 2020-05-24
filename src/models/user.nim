@@ -9,10 +9,17 @@ import times
 import ../timeutils
 
 let databaseUrl = getEnv "DATABASE_URL"
+proc openDb(): DbConn = open("", "", "", databaseUrl)
 
 type User* = object
-  userId*: string
-  createdAt*: DateTime
+  user_id*: string
+  created_at*: DateTime
+
+proc fromDbRow(row: Row) : User =
+  User(
+    user_id: row[0],
+    created_at: parseUtcIso8601 row[1]
+  )
 
 proc initUser*(userId: string = $genOid()): User =
   let query = sql"""
@@ -25,10 +32,26 @@ INSERT INTO users (user_id) VALUES (?)
 -- will do for now.
 --
 ON CONFLICT (user_id) DO UPDATE SET user_id = users.user_id
-RETURNING TO_JSON(DATE_TRUNC('SECOND', created_at))#>>'{}' AS created_at"""
-  let conn = open("", "", "", databaseUrl)
+RETURNING
+  user_id
+, TO_JSON(DATE_TRUNC('SECOND', created_at))#>>'{}' AS created_at"""
+  let conn = openDb()
   try:
-    let createdAt = parseUtcIso8601 conn.getValue(query, userId)
-    User(userId: userId, createdAt: createdAt)
+    fromDbRow conn.getRow(query, userId)
+  finally:
+    close conn
+
+proc inGame*(gameId: int): seq[User] =
+  let query = sql"""
+SELECT
+  u.user_id
+, TO_JSON(DATE_TRUNC('SECOND', u.created_at))#>>'{}' AS created_at
+FROM users u
+JOIN users_games ug ON ug.game_id = ?
+                   AND u.user_id = ug.user_id"""
+  let conn = openDb()
+  try:
+    let rows = conn.getAllRows(query, gameId)
+    rows.map fromDbRow
   finally:
     close conn

@@ -38,11 +38,13 @@
 
 <select bind:value={selectedGame}>
   <option disabled selected value> -- select a game -- </option>
+
   {#each games as game}
     <option value={game}>
       Game {game.id}
     </option>
   {/each}
+
 </select>
 
 <button on:click={createNewGame}>Create a new game</button>

@@ -7,6 +7,7 @@ import strutils
 import ulid
 
 import ./models/game
+import ./models/user
 
 router api:
   template okText(thing: untyped): untyped =
@@ -15,7 +16,7 @@ router api:
   template okJson(json: untyped): untyped =
     resp Http200, {"Content-Type": "application/json"}, $ %json
 
-  template ensureUserId(): string =
+  template requireUserId(): string =
     const key = "User-Id"
     if not request.headers.hasKey key: halt Http401
     let userId = request.headers[key]
@@ -23,23 +24,29 @@ router api:
     userId
 
   get "games":
-    let userId = ensureUserId()
+    let userId = requireUserId()
     okJson getGamesUserIsIn(userId)
 
   post "games":
-    let userId = ensureUserId()
+    let userId = requireUserId()
     let game = initGame userId
     let jsonNode = %game
     jsonNode["status"] = %(getGameStatus game)
+    jsonNode["players"] = %(inGame game.id)
     okJson jsonNode
 
+  put "game/join/@id":
+    let userId = requireUserId()
+    resp Http501
+
   get "game/@id":
-    let userId = ensureUserId()
+    let userId = requireUserId()
     let gameOpt = findGame parseInt(@"id")
     if gameOpt.isSome():
       let game = gameOpt.get()
       let jsonNode = %game
       jsonNode["status"] = %(getGameStatus game)
+      jsonNode["players"] = %(inGame game.id)
       okJson jsonNode
     else:
       resp Http404
