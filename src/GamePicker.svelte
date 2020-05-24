@@ -1,7 +1,6 @@
 <script>
-  export let games = [];
-  let selectedGame;
-  let gamesPromise = Promise.resolve([]);
+  let games = [];
+  export let selectedGame = null;
 
   async function fetchGames() {
     const res = await fetch("/api/games");
@@ -27,7 +26,3 @@
     </option>
   {/each}
 </select>
-
-{#if selectedGame}
-  <p>Selected: <strong>{selectedGame.id}</strong></p>
-{/if}

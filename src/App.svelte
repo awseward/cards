@@ -1,11 +1,14 @@
 <script>
   import GamePicker from './GamePicker.svelte';
+  import GameDisplay from './GameDisplay.svelte';
+  let selectedGame;
 </script>
 
 <main>
   <p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 
-  <GamePicker />
+  <GamePicker bind:selectedGame />
+  <GameDisplay selectedGame={selectedGame} />
 </main>
 
 <style>
