@@ -7,6 +7,13 @@ import oids
 proc genUserId*(): string =
   $genOid()
 
+const expirationDays = 365 * 1000
+
+template ensureUserId*(request: untyped): untyped =
+  let cookies = request.cookies
+  if not cookies.hasKey("user_id") or cookies["user_id"] == "":
+    setCookie("user_id", genUserId(), daysForward(expirationDays))
+
 const isHeroku* = block:
   const key = "IS_HEROKU"
   existsEnv(key) and parseBool(getEnv key)
@@ -23,6 +30,7 @@ when isHeroku:
 
   router web:
     get "/":
+      ensureUserId request
       resp indexHtml
 
     get "/build/bundle.js":
@@ -43,10 +51,7 @@ when isHeroku:
 else:
   router web:
     get "/":
-      block:
-        let cookies = request.cookies
-        if not cookies.hasKey("user_id") or cookies["user_id"] == "":
-          setCookie("user_id", genUserId(), daysForward(365 * 1000))
+      ensureUserId request
       # Ehhh this isn't awesome, but it works for now especially since it's
       # just local dev that it affects.
       redirect "/index.html"
