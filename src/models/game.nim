@@ -20,7 +20,7 @@ proc `%`*(datetime: DateTime): JsonNode =
 let databaseUrl = getEnv "DATABASE_URL"
 
 proc initGame*(): Game =
-  let query = sql"INSERT INTO games (created_at) VALUES (CURRENT_TIMESTAMP)"
+  let query = sql"INSERT INTO games DEFAULT VALUES"
   let conn = open("", "", "", databaseUrl)
   try:
     let id = int(conn.insertId query)
