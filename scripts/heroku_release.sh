@@ -10,11 +10,11 @@ _install_shmig() {
 }
 
 _host() {
-  echo "${1}" | sed -E 's/^.*@([^:]+):.*$/\1/' # FIXME
+  echo "${1}" | sed -E 's/^.*@([^:]+):.*$/\1/'
 }
 
 _port() {
-  echo "${1}" | sed -E 's/^.*:([^\/]+)\/.*$/\1/' # FIXME
+  echo "${1}" | sed -E 's/^.*:([^\/]+)\/.*$/\1/'
 }
 
 _login() {
@@ -26,7 +26,7 @@ _password() {
 }
 
 _name() {
-  echo "${1}" | sed -E 's/^.*\/(.*)$/\1/' # FIXME
+  echo "${1}" | sed -E 's/^.*\/(.*)$/\1/'
 }
 
 DATABASE_HOST="$(_host "${DATABASE_URL}")"; export DATABASE_HOST
