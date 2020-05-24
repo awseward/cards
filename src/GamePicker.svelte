@@ -13,6 +13,21 @@
     }
   }
 
+  async function createNewGame() {
+    const res = await fetch("/api/games", {
+      method: 'POST'
+    });
+    const text = await res.text();
+
+    if (res.ok) {
+      const game = JSON.parse(text);
+      games = [...games, game];
+      selectedGame = game;
+    } else {
+      throw new Error(text);
+    }
+  }
+
   fetchGames().then(gs => games = gs);
 </script>
 
@@ -26,3 +41,5 @@
     </option>
   {/each}
 </select>
+
+<button on:click={createNewGame}>Create a new game</button>
