@@ -11,7 +11,7 @@ type Status* = enum
   done
 
 type Game* = object
-  id*: string
+  id*: int
   created_at*: DateTime
 
 proc `%`*(datetime: DateTime): JsonNode =
@@ -19,7 +19,7 @@ proc `%`*(datetime: DateTime): JsonNode =
 
 proc initGame*(): Game =
   Game(
-    id: ulid(),
+    id: 4, # This is just temporary
     created_at: now()
   )
 

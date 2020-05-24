@@ -1,2 +1,8 @@
-export DATABASE_URL=postgres://localhost:5432/call_status_development
+export DATABASE_URL=postgres://localhost:5432/cards_development
 
+# It's a little weird to have these in both spots, but these are here for
+# shmig, which can't just take a DATABASE_URL and figure it out. It needs the
+# parts broken out instead.
+export DATABASE_NAME=cards_development
+export DATABASE_HOST=localhost
+export DATABASE_PORT=5432

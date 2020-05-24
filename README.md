@@ -1,4 +1,4 @@
-# hello_nim_svelte
+# cards
 
 There are 2 environments this considers:
 
