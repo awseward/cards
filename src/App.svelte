@@ -1,8 +1,10 @@
 <script>
   import GamePicker from './GamePicker.svelte';
   import GameDisplay from './GameDisplay.svelte';
+
   let selectedGame;
   let userId = getUserId();
+  window.userId = userId;
 
   function getUserId() {
     let found = document.cookie.split('; ').map(str => str.split('=')).filter(arr => arr[0] == 'user_id');

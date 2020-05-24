@@ -1,7 +1,9 @@
 <script>
   export let selectedGame;
   async function fetchGameDetails(id) {
-    const res = await fetch(`/api/game/${selectedGame.id}`);
+    const res = await fetch(`/api/game/${selectedGame.id}`, {
+      headers: { 'User-Id': window.userId }
+    });
     const text = await res.text();
     // TODO: Don't forget to remove this
     // await new Promise(resolve => setTimeout(resolve, 500));

@@ -3,7 +3,9 @@
   export let selectedGame = null;
 
   async function fetchGames() {
-    const res = await fetch("/api/games");
+    const res = await fetch("/api/games", {
+      headers: { 'User-Id': window.userId }
+    });
     const text = await res.text();
 
     if (res.ok) {
@@ -15,7 +17,8 @@
 
   async function createNewGame() {
     const res = await fetch("/api/games", {
-      method: 'POST'
+      method: 'POST',
+      headers: { 'User-Id': window.userId }
     });
     const text = await res.text();
 
