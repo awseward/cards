@@ -70,22 +70,6 @@ FROM games
   finally:
     close conn
 
-proc getGamesCreatedByUser*(userId: string): seq[Game] =
-  let query = sql"""
-SELECT
-  id
-, TO_JSON(DATE_TRUNC('SECOND', created_at))#>>'{}'
-, created_by_user_id
-FROM games
-WHERE created_by_user_id = ?
-"""
-  let conn = openDb()
-  try:
-    let rows = conn.getAllRows(query, userId)
-    rows.map fromDbRow
-  finally:
-    close conn
-
 proc getGamesUserisIn*(userId: string): seq[Game] =
   let query = sql"""
 SELECT
