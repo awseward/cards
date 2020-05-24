@@ -1,6 +1,7 @@
 import asyncdispatch
 import jester
 import json
+import options
 import os
 import sequtils
 import strutils

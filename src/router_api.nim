@@ -1,7 +1,9 @@
 import asyncdispatch
 import jester
 import json
+import options
 import sequtils
+import strutils
 import ulid
 
 import ./models/game
@@ -22,4 +24,11 @@ router api:
     okJson jsonNode
 
   get "game/@id":
-    okText "TODO: Show endpoint for game " & @"id"
+    let gameOpt = findGame parseInt(@"id")
+    if gameOpt.isSome():
+      let game = gameOpt.get()
+      let jsonNode = %game
+      jsonNode["status"] = %(getGameStatus game)
+      okJson jsonNode
+    else:
+      resp Http404

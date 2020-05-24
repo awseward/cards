@@ -1,5 +1,6 @@
 import db_postgres
 import json
+import options
 import os
 import sequtils
 import strutils
@@ -62,5 +63,22 @@ FROM games
   try:
     let rows = conn.getAllRows query
     rows.map fromDbRow
+  finally:
+    close conn
+
+proc findGame*(id: int): Option[Game] =
+  let query = sql"""
+SELECT
+  id
+, TO_JSON(DATE_TRUNC('SECOND', created_at))#>>'{}'
+FROM games
+WHERE id = ?
+  """
+  let conn = open("", "", "", databaseUrl)
+  try:
+    let rows = conn.getAllRows(query, id)
+    if rows.len == 0: none Game
+    else:
+      some fromDbRow(rows[0])
   finally:
     close conn
