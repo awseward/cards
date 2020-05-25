@@ -111,5 +111,15 @@
   .loading {
     filter: blur(1.5px);
     opacity: 0.9;
+    /* animation: anim-loading 0.2s 1 ease-in-out alternate-reverse; */
+  }
+
+  @keyframes anim-loading {
+    from {
+      transform: translateY(0) scale(1);
+    }
+    to {
+      transform: translateY(-5px) scale(0.98);
+    }
   }
 </style>
