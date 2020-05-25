@@ -33,8 +33,8 @@ router api:
     userId
 
   get "games":
-    let userId = requireUserId()
-    okJson getGamesUserIsIn(userId)
+    discard requireUserId()
+    okJson getAllGames()
 
   post "games":
     let userId = requireUserId()
@@ -52,8 +52,12 @@ router api:
 
   put "game/@id/join":
     let userId = requireUserId()
-    resp Http501
+    let gameId = parseInt @"id"
+    addUser gameId, userId
+    resp Http204
 
   put "game/@id/leave":
     let userId = requireUserId()
-    resp Http501
+    let gameId = parseInt @"id"
+    removeUser gameId, userId
+    resp Http204

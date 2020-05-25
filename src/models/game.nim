@@ -105,3 +105,19 @@ WHERE id = ?
       some fromDbRow(rows[0])
   finally:
     close conn
+
+proc removeUser*(gameId: int, userId: string) =
+  let query = sql"DELETE FROM users_games WHERE game_id = ? AND user_id = ?"
+  let conn = openDb()
+  try:
+    conn.exec(query, $gameId, userId)
+  finally:
+    close conn
+
+proc addUser*(gameId: int, userId: string) =
+  let query = sql"INSERT INTO users_games (game_id, user_id) VALUES (?, ?)"
+  let conn = openDb()
+  try:
+    conn.exec(query, $gameId, userId)
+  finally:
+    close conn

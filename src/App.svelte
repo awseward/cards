@@ -21,7 +21,9 @@
   <p><strong>User ID:</strong> {userId}</p>
 
   <GamePicker bind:selectedGame />
-  <GameDisplay selectedGame={selectedGame} />
+  {#if selectedGame}
+    <GameDisplay bind:selectedGame />
+  {/if}
 </main>
 
 <style>
