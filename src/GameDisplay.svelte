@@ -41,6 +41,10 @@
     }
   }
 
+  async function startGame(gameId) {
+    alert('TODO: start game functionality');
+  }
+
   function prettyJson(obj) {
     return JSON.stringify(obj, null, 2);
   }
@@ -61,15 +65,12 @@
 
   {#if isUserInGame(details) }
     {#if details.status === 'pending' || details.status === 'ready'}
-      <button class="leave-or-join" on:click={() => leaveGame(details.id)}>Leave Game</button>
-    {:else}
-      <p>Cannot leave game unless it is status: pending or ready.
+      <button class="game-action" on:click={() => leaveGame(details.id)}>Leave Game</button>
+      <button class="game-action" on:click={() => startGame(details.id)}>Start game</button>
     {/if}
   {:else}
     {#if details.status === 'pending' || details.status === 'ready'}
-      <button class="leave-or-join" on:click={() => joinGame(details.id)}>Join Game</button>
-    {:else}
-      <p>Cannot leave game unless it is status: pending or ready.
+      <button class="game-action" on:click={() => joinGame(details.id)}>Join Game</button>
     {/if}
   {/if}
 
@@ -87,7 +88,7 @@
     text-align: left;
   }
 
-  .leave-or-join {
+  .game-action {
     margin-top: 20px;
   }
 </style>
