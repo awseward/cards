@@ -41,7 +41,7 @@ RETURNING
   finally:
     close conn
 
-proc inGame*(gameId: int): seq[User] =
+proc usersInGame*(gameId: int): seq[User] =
   let query = sql"""
 SELECT
   u.user_id

@@ -2,6 +2,9 @@
   let games = [];
   export let selectedGame = null;
 
+  let allGames = [];
+  let selectedToJoin = null;
+
   async function fetchGames() {
     const res = await fetch("/api/games", {
       headers: { 'User-Id': window.userId }
@@ -34,17 +37,29 @@
   fetchGames().then(gs => games = gs);
 </script>
 
-<h3>Games</h3>
+<h3>Your Games</h3>
+<p>These are games you're a participant in</p>
 
 <select bind:value={selectedGame}>
   <option disabled selected value> -- select a game -- </option>
-
   {#each games as game}
     <option value={game}>
       Game {game.id}
     </option>
   {/each}
-
 </select>
 
-<button on:click={createNewGame}>Create a new game</button>
+<h4>All other games</h4>
+
+<select bind:value={selectedToJoin}>
+  <option disabled selected value> -- select a game -- </option>
+  {#each allGames as game}
+    <option value={game}>
+      Game {game.id}
+    </option>
+  {/each}
+</select>
+
+</div>
+  <button on:click={createNewGame}>Create a new game</button>
+</div>

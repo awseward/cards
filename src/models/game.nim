@@ -7,10 +7,12 @@ import strutils
 import times
 
 import ../timeutils
+import ../models/user
 
 type GameStatus* = enum
   pending,
-  going,
+  ready,
+  playing,
   done
 
 type Game* = object
@@ -50,10 +52,11 @@ RETURNING
   finally:
     close conn
 
-proc getGameStatus*(game: Game): GameStatus =
-  # FIXME: Look up relevant details and determine status
-  pending
-
+proc getGameStatus*(game: Game, players: seq[User] = @[]): GameStatus =
+  if players.len > 1:
+    ready
+  else:
+    pending
 
 proc getAllGames*(): seq[Game] =
   let query = sql"""

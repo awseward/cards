@@ -6,8 +6,6 @@
       headers: { 'User-Id': window.userId }
     });
     const text = await res.text();
-    // TODO: Don't forget to remove this
-    // await new Promise(resolve => setTimeout(resolve, 500));
 
     if (res.ok) {
       return JSON.parse(text);
@@ -33,7 +31,7 @@
     <div class="game-details">
       <strong>Game details:</strong> <pre>{prettyJson(details)}</pre>
     </div>
-    {#if details.status === 'pending'}
+    {#if details.status === 'pending' || details.status === 'ready'}
       <button class="leave-game" on:click={handleLeaveButtonClick}>Leave Game</button>
     {/if}
   {:catch error}
