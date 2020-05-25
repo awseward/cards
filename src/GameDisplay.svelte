@@ -1,6 +1,11 @@
 <script>
   export let selectedGame;
-  $: detailsPromise = fetchGameDetails(selectedGame.id);
+  let detailsPromise
+  $: {
+    if (selectedGame) {
+      detailsPromise = fetchGameDetails(selectedGame.id);
+    }
+  }
 
   async function fetchGameDetails(gameId) {
     const res = await fetch(`/api/game/${gameId}`, {
@@ -36,6 +41,7 @@
 
     if (res.ok) {
       detailsPromise = fetchGameDetails(gameId);
+      selectedGame = null;
     } else {
       throw new Error(await res.text());
     }
@@ -54,31 +60,33 @@
   }
 </script>
 
-<p><strong>Selected game:</strong> {selectedGame.id}</p>
+{#if selectedGame }
+  <p><strong>Selected game:</strong> {selectedGame.id}</p>
 
-{#await detailsPromise}
-  <p>... fetching game details ...</p>
-{:then details}
-  <div class="game-details">
-    <strong>Game details:</strong> <pre>{prettyJson(details)}</pre>
-  </div>
+  {#await detailsPromise}
+    <p>... fetching game details ...</p>
+  {:then details}
+    <div class="game-details">
+      <strong>Game details:</strong> <pre>{prettyJson(details)}</pre>
+    </div>
 
-  {#if isUserInGame(details) }
-    {#if details.status === 'pending' || details.status === 'ready'}
-      <button class="game-action" on:click={() => leaveGame(details.id)}>Leave Game</button>
+    {#if isUserInGame(details) }
+      {#if details.status === 'pending' || details.status === 'ready'}
+        <button class="game-action" on:click={() => leaveGame(details.id)}>Leave Game</button>
+      {/if}
+      {#if details.status === 'ready'}
+        <button class="game-action" on:click={() => startGame(details.id)}>Start game</button>
+      {/if}
+    {:else}
+      {#if details.status === 'pending' || details.status === 'ready'}
+        <button class="game-action" on:click={() => joinGame(details.id)}>Join Game</button>
+      {/if}
     {/if}
-    {#if details.status === 'ready'}
-      <button class="game-action" on:click={() => startGame(details.id)}>Start game</button>
-    {/if}
-  {:else}
-    {#if details.status === 'pending' || details.status === 'ready'}
-      <button class="game-action" on:click={() => joinGame(details.id)}>Join Game</button>
-    {/if}
-  {/if}
 
-{:catch error}
-  <p style="color: red">{error.message}</p>
-{/await}
+  {:catch error}
+    <p style="color: red">{error.message}</p>
+  {/await}
+{/if}
 
 <style>
   .game-details {

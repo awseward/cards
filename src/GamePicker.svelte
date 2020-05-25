@@ -1,6 +1,12 @@
 <script>
   let games = [];
   export let selectedGame = null;
+  let select;
+  $: {
+    if (selectedGame === null && select) {
+      select.selectedIndex = 0;
+    }
+  }
 
   async function fetchGames() {
     const res = await fetch("/api/games", {
@@ -40,7 +46,7 @@
 
 <h3>Games</h3>
 
-<select bind:value={selectedGame}>
+<select bind:value={selectedGame} bind:this={select}>
   <option disabled selected value>-- select a game --</option>
   {#each games as game (game.id)}
     <option value={game}>
