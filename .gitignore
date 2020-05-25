@@ -19,3 +19,6 @@ src/views/assets_file.nim
 
 # nimble binaries
 web
+
+# misc custom heroku build stuff
+.bin/
