@@ -98,7 +98,7 @@
   <p><strong>Selected game:</strong> {game.id}</p>
 
   {#if details}
-    <div class="game-details" class:loading out:fade="{{ duration: 500 }}">
+    <div class="game-details" class:loading in:fade="{{ duration: 200 }}" out:fade="{{ duration: 500 }}">
       <strong>Game details:</strong> <pre>{prettyJson(details)}</pre>
     </div>
 
