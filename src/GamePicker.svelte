@@ -41,8 +41,8 @@
 <h3>Games</h3>
 
 <select bind:value={selectedGame}>
-  <option disabled selected value> -- select a game -- </option>
-  {#each games as game}
+  <option disabled selected value>-- select a game --</option>
+  {#each games as game (game.id)}
     <option value={game}>
       Game {game.id}
     </option>

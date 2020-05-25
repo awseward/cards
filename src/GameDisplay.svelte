@@ -66,6 +66,8 @@
   {#if isUserInGame(details) }
     {#if details.status === 'pending' || details.status === 'ready'}
       <button class="game-action" on:click={() => leaveGame(details.id)}>Leave Game</button>
+    {/if}
+    {#if details.status === 'ready'}
       <button class="game-action" on:click={() => startGame(details.id)}>Start game</button>
     {/if}
   {:else}
