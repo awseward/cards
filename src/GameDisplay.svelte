@@ -16,7 +16,7 @@
         headers: { 'User-Id': window.userId }
       });
       const text = await res.text();
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 300));
 
       if (res.ok) {
         details = JSON.parse(text);
@@ -110,5 +110,6 @@
 
   .loading {
     filter: blur(1.5px);
+    opacity: 0.9;
   }
 </style>
