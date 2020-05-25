@@ -15,7 +15,6 @@ requires "jester >= 0.4.3"
 requires "nim >= 1.2.0"
 requires "nimassets >= 0.1.0"
 requires "ulid >= 0.3.0"
-requires "https://github.com/awseward/heroku_database_url_splitter#90c6f65"
 
 
 

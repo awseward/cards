@@ -9,6 +9,31 @@ _install_shmig() {
   export PATH="${temp_dir}:${PATH}"
 }
 
+_host() {
+  echo "${1}" | sed -E 's/^.*@([^:]+):.*$/\1/'
+}
+
+_port() {
+  echo "${1}" | sed -E 's/^.*:([^\/]+)\/.*$/\1/'
+}
+
+_login() {
+  echo "${1}" | sed -E 's/^.*:\/\/([^:]+):.*$/\1/'
+}
+
+_password() {
+  echo "${1}" | sed -E 's/^.*:([^@]+)@.*$/\1/'
+}
+
+_name() {
+  echo "${1}" | sed -E 's/^.*\/(.*)$/\1/'
+}
+
+DATABASE_HOST="$(_host "${DATABASE_URL}")"; export DATABASE_HOST
+DATABASE_PORT="$(_port "${DATABASE_URL}")"; export DATABASE_PORT
+DATABASE_LOGIN="$(_login "${DATABASE_URL}")"; export DATABASE_LOGIN
+DATABASE_PASSWORD="$(_password "${DATABASE_URL}")"; export DATABASE_PASSWORD
+DATABASE_NAME="$(_name "${DATABASE_URL}")"; export DATABASE_NAME
+
 _install_shmig
-eval "$(heroku_database_url_splitter)"
 echo up | xargs -t shmig
