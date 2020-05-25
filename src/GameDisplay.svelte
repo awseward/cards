@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { fade } from 'svelte/transition';
   import { userId, defaultHeaders } from './stores.js';
 
   const dispatch = createEventDispatcher();
@@ -57,7 +58,6 @@
     if (res.ok) {
       detailsPromise = fetchGameDetails(gameId);
       await detailsPromise;
-      await new Promise(resolve => setTimeout(resolve, 400));
       game = null;
     } else {
       throw new Error(await res.text());
@@ -72,7 +72,6 @@
         method: 'DELETE'
       });
       if (res.ok) {
-        await new Promise(resolve => setTimeout(resolve, 300));
         dispatch('gameDeleted', {});
         details = null;
         game = null;
@@ -99,7 +98,7 @@
   <p><strong>Selected game:</strong> {game.id}</p>
 
   {#if details}
-    <div class="game-details" class:loading>
+    <div class="game-details" class:loading out:fade="{{ duration: 500 }}">
       <strong>Game details:</strong> <pre>{prettyJson(details)}</pre>
     </div>
 
