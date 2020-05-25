@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { userId } from './stores.js';
 
   const dispatch = createEventDispatcher();
 
@@ -18,7 +19,7 @@
     loading = true;
     try {
       const res = await fetch(`/api/game/${gameId}`, {
-        headers: { 'User-Id': window.userId }
+        headers: { 'User-Id': $userId }
       });
       const text = await res.text();
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -36,7 +37,7 @@
 
   async function joinGame(gameId) {
     const res = await fetch(`/api/game/${gameId}/join`, {
-      headers: { 'User-Id': window.userId },
+      headers: { 'User-Id': $userId },
       method: 'PUT'
     });
 
@@ -49,7 +50,7 @@
 
   async function leaveGame(gameId) {
     const res = await fetch(`/api/game/${gameId}/leave`, {
-      headers: { 'User-Id': window.userId },
+      headers: { 'User-Id': $userId },
       method: 'PUT'
     });
 
@@ -67,7 +68,7 @@
     loading = true;
     try {
       const res = await fetch(`/api/game/${gameId}`, {
-        headers: { 'User-Id': window.userId },
+        headers: { 'User-Id': $userId },
         method: 'DELETE'
       });
       if (res.ok) {
@@ -90,7 +91,7 @@
   }
 
   function isUserInGame(game) {
-    return game.players.map(u => u.user_id).includes(window.userId);
+    return game.players.map(u => u.user_id).includes($userId);
   }
 </script>
 
