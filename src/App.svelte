@@ -21,7 +21,7 @@
   <p><strong>User ID:</strong> {userId}</p>
 
   <GamePicker bind:selectedGame />
-  <GameDisplay bind:selectedGame />
+  <GameDisplay bind:game={selectedGame} />
 </main>
 
 <style>

@@ -1,6 +1,6 @@
 <script>
-  let games = [];
   export let selectedGame = null;
+  let games = [];
   let select;
   $: {
     if (selectedGame === null && select) {

@@ -1,9 +1,9 @@
 <script>
-  export let selectedGame;
+  export let game = null;
   let detailsPromise
   $: {
-    if (selectedGame) {
-      detailsPromise = fetchGameDetails(selectedGame.id);
+    if (game) {
+      detailsPromise = fetchGameDetails(game.id);
     }
   }
 
@@ -41,7 +41,9 @@
 
     if (res.ok) {
       detailsPromise = fetchGameDetails(gameId);
-      selectedGame = null;
+      await detailsPromise;
+      await new Promise(resolve => setTimeout(resolve, 400));
+      game = null;
     } else {
       throw new Error(await res.text());
     }
@@ -60,8 +62,8 @@
   }
 </script>
 
-{#if selectedGame }
-  <p><strong>Selected game:</strong> {selectedGame.id}</p>
+{#if game }
+  <p><strong>Selected game:</strong> {game.id}</p>
 
   {#await detailsPromise}
     <p>... fetching game details ...</p>
