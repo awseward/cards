@@ -22,7 +22,7 @@
   <p><strong>User ID:</strong> {userId}</p>
 
   <GamePicker bind:selectedGame bind:refreshGames />
-  <GameDisplay bind:game={selectedGame} refreshGames={refreshGames} />
+  <GameDisplay bind:game={selectedGame} on:gameDeleted={() => refreshGames && refreshGames()} />
 </main>
 
 <style>

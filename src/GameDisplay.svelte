@@ -1,9 +1,12 @@
 <script>
-  export let refreshGames;
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher();
+
   export let game = null;
   let details;
   let detailsPromise;
-  let detailsLoading;
+  let loading;
   $: {
     if (game) {
       detailsPromise = fetchGameDetails(game.id);
@@ -12,7 +15,7 @@
   $: pendingOrReady = details && (details.status === 'pending' || details.status === 'ready')
 
   async function fetchGameDetails(gameId) {
-    detailsLoading = true;
+    loading = true;
     try {
       const res = await fetch(`/api/game/${gameId}`, {
         headers: { 'User-Id': window.userId }
@@ -27,7 +30,7 @@
         throw new Error(text);
       }
     } finally {
-      detailsLoading = false;
+      loading = false;
     }
   }
 
@@ -61,17 +64,21 @@
   }
 
   async function deleteGame(gameId) {
-    const res = await fetch(`/api/game/${gameId}`, {
-      headers: { 'User-Id': window.userId },
-      method: 'DELETE'
-    });
-    if (res.ok) {
-      details = null;
-      game = null;
-      refreshGames && refreshGames();
-    } else {
-      throw new Error(await res.text());
-    }
+    loading = true;
+    try {
+      const res = await fetch(`/api/game/${gameId}`, {
+        headers: { 'User-Id': window.userId },
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        dispatch('gameDeleted', {});
+        details = null;
+        game = null;
+      } else {
+        throw new Error(await res.text());
+      }
+    } finally { loading = false; }
   }
 
   async function startGame(gameId) {
@@ -91,7 +98,7 @@
   <p><strong>Selected game:</strong> {game.id}</p>
 
   {#if details}
-    <div class="game-details" class:loading={detailsLoading}>
+    <div class="game-details" class:loading>
       <strong>Game details:</strong> <pre>{prettyJson(details)}</pre>
     </div>
 
