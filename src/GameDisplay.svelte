@@ -1,6 +1,8 @@
 <script>
   export let game = null;
-  let detailsPromise
+  let details;
+  let detailsPromise;
+  let detailsLoading;
   $: {
     if (game) {
       detailsPromise = fetchGameDetails(game.id);
@@ -8,15 +10,22 @@
   }
 
   async function fetchGameDetails(gameId) {
-    const res = await fetch(`/api/game/${gameId}`, {
-      headers: { 'User-Id': window.userId }
-    });
-    const text = await res.text();
+    detailsLoading = true;
+    try {
+      const res = await fetch(`/api/game/${gameId}`, {
+        headers: { 'User-Id': window.userId }
+      });
+      const text = await res.text();
+      await new Promise(resolve => setTimeout(resolve, 200));
 
-    if (res.ok) {
-      return JSON.parse(text);
-    } else {
-      throw new Error(text);
+      if (res.ok) {
+        details = JSON.parse(text);
+        return details;
+      } else {
+        throw new Error(text);
+      }
+    } finally {
+      detailsLoading = false;
     }
   }
 
@@ -65,10 +74,8 @@
 {#if game }
   <p><strong>Selected game:</strong> {game.id}</p>
 
-  {#await detailsPromise}
-    <p>... fetching game details ...</p>
-  {:then details}
-    <div class="game-details">
+  {#if details}
+    <div class="game-details" class:loading={detailsLoading}>
       <strong>Game details:</strong> <pre>{prettyJson(details)}</pre>
     </div>
 
@@ -84,10 +91,7 @@
         <button class="game-action" on:click={() => joinGame(details.id)}>Join Game</button>
       {/if}
     {/if}
-
-  {:catch error}
-    <p style="color: red">{error.message}</p>
-  {/await}
+  {/if}
 {/if}
 
 <style>
@@ -102,5 +106,9 @@
 
   .game-action {
     margin-top: 20px;
+  }
+
+  .loading {
+    filter: blur(1.5px);
   }
 </style>
