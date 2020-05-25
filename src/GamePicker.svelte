@@ -1,5 +1,6 @@
 <script>
   export let selectedGame = null;
+  export let refreshGames = () => fetchGames().then(gs => games = gs);
   let games = [];
   let select;
   $: {
@@ -37,7 +38,7 @@
     }
   }
 
-  fetchGames().then(gs => games = gs);
+  refreshGames();
 </script>
 
 <div>

@@ -1,4 +1,5 @@
 <script>
+  export let refreshGames;
   export let game = null;
   let details;
   let detailsPromise;
@@ -8,6 +9,7 @@
       detailsPromise = fetchGameDetails(game.id);
     }
   }
+  $: pendingOrReady = details && (details.status === 'pending' || details.status === 'ready')
 
   async function fetchGameDetails(gameId) {
     detailsLoading = true;
@@ -58,6 +60,20 @@
     }
   }
 
+  async function deleteGame(gameId) {
+    const res = await fetch(`/api/game/${gameId}`, {
+      headers: { 'User-Id': window.userId },
+      method: 'DELETE'
+    });
+    if (res.ok) {
+      details = null;
+      game = null;
+      refreshGames && refreshGames();
+    } else {
+      throw new Error(await res.text());
+    }
+  }
+
   async function startGame(gameId) {
     alert('TODO: start game functionality');
   }
@@ -80,16 +96,19 @@
     </div>
 
     {#if isUserInGame(details) }
-      {#if details.status === 'pending' || details.status === 'ready'}
+      {#if pendingOrReady}
         <button class="game-action" on:click={() => leaveGame(details.id)}>Leave Game</button>
       {/if}
       {#if details.status === 'ready'}
         <button class="game-action" on:click={() => startGame(details.id)}>Start game</button>
       {/if}
     {:else}
-      {#if details.status === 'pending' || details.status === 'ready'}
+      {#if pendingOrReady}
         <button class="game-action" on:click={() => joinGame(details.id)}>Join Game</button>
       {/if}
+    {/if}
+    {#if pendingOrReady}
+      <button class="game-action" on:click={() => deleteGame(details.id)}>Delete Game</button>
     {/if}
   {/if}
 {/if}

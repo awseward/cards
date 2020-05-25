@@ -121,3 +121,11 @@ proc addUser*(gameId: int, userId: string) =
     conn.exec(query, $gameId, userId)
   finally:
     close conn
+
+proc deleteGame*(gameId: int) =
+  let query = sql"DELETE FROM games WHERE id = ?"
+  let conn = openDb()
+  try:
+    conn.exec(query, $gameId)
+  finally:
+    close conn

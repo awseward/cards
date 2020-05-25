@@ -3,6 +3,7 @@
   import GameDisplay from './GameDisplay.svelte';
 
   let selectedGame;
+  let refreshGames;
   let userId = getUserId();
   window.userId = userId;
 
@@ -20,8 +21,8 @@
 
   <p><strong>User ID:</strong> {userId}</p>
 
-  <GamePicker bind:selectedGame />
-  <GameDisplay bind:game={selectedGame} />
+  <GamePicker bind:selectedGame bind:refreshGames />
+  <GameDisplay bind:game={selectedGame} refreshGames={refreshGames} />
 </main>
 
 <style>

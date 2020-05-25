@@ -50,6 +50,11 @@ router api:
     else:
       resp Http404
 
+  delete "game/@id":
+    let userId = requireUserId()
+    deleteGame parseInt(@"id")
+    resp Http204
+
   put "game/@id/join":
     let userId = requireUserId()
     let gameId = parseInt @"id"
