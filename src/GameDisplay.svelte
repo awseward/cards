@@ -1,6 +1,6 @@
 <script>
   export let selectedGame;
-  let detailsPromise = fetchGameDetails(selectedGame.id);
+  $: detailsPromise = fetchGameDetails(selectedGame.id);
 
   async function fetchGameDetails(gameId) {
     const res = await fetch(`/api/game/${gameId}`, {
