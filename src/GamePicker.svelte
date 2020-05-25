@@ -1,5 +1,5 @@
 <script>
-  import { userId } from './stores.js';
+  import { userId, defaultHeaders } from './stores.js';
 
   export let selectedGame = null;
   export let refreshGames = () => fetchGames().then(gs => games = gs);
@@ -13,7 +13,7 @@
 
   async function fetchGames() {
     const res = await fetch("/api/games", {
-      headers: { 'User-Id': $userId }
+      headers: $defaultHeaders
     });
     const text = await res.text();
 
@@ -27,7 +27,7 @@
   async function createNewGame() {
     const res = await fetch("/api/games", {
       method: 'POST',
-      headers: { 'User-Id': $userId }
+      headers: $defaultHeaders
     });
     const text = await res.text();
 

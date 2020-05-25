@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  import { userId } from './stores.js';
+  import { userId, defaultHeaders } from './stores.js';
 
   const dispatch = createEventDispatcher();
 
@@ -19,7 +19,7 @@
     loading = true;
     try {
       const res = await fetch(`/api/game/${gameId}`, {
-        headers: { 'User-Id': $userId }
+        headers: $defaultHeaders
       });
       const text = await res.text();
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -37,7 +37,7 @@
 
   async function joinGame(gameId) {
     const res = await fetch(`/api/game/${gameId}/join`, {
-      headers: { 'User-Id': $userId },
+      headers: $defaultHeaders,
       method: 'PUT'
     });
 
@@ -50,7 +50,7 @@
 
   async function leaveGame(gameId) {
     const res = await fetch(`/api/game/${gameId}/leave`, {
-      headers: { 'User-Id': $userId },
+      headers: $defaultHeaders,
       method: 'PUT'
     });
 
@@ -68,7 +68,7 @@
     loading = true;
     try {
       const res = await fetch(`/api/game/${gameId}`, {
-        headers: { 'User-Id': $userId },
+        headers: $defaultHeaders,
         method: 'DELETE'
       });
       if (res.ok) {
