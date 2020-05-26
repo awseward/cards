@@ -16,6 +16,8 @@ requires "nim >= 1.2.0"
 requires "nimassets >= 0.1.0"
 requires "ulid >= 0.3.0"
 
+requires "https://github.com/awseward/heroku_database_url_splitter#90c6f65"
+
 
 
 # Tasks
@@ -37,9 +39,8 @@ task pretty, "Run nimpretty on all .nim files in the repo":
   exec "find . -type f -not -name 'assets_file.nim' -name '*.nim' | xargs -n1 nimpretty --indent:2 --maxLineLen:120"
 
 task heroku_build, "Steps to perform during the heroku build phase":
-  exec "nimble install --accept nimassets"
-  exec "nimble assets"
-  exec "nimble install --accept 'https://github.com/awseward/heroku_database_url_splitter'"
+  exec "echo install | xargs -t nimble --depsOnly --accept"
+  exec "echo assets | xargs -t nimble"
   exec "mkdir -vp .bin/"
   exec "echo .bin/ | xargs -t cp \"$(which heroku_database_url_splitter)\""
   exec """
