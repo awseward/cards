@@ -1,4 +1,3 @@
-import db_postgres
 import json
 import oids
 import os
@@ -6,10 +5,10 @@ import sequtils
 import strutils
 import times
 
+import ../db
 import ../timeutils
 
-let databaseUrl = getEnv "DATABASE_URL"
-proc openDb(): DbConn = open("", "", "", databaseUrl)
+let db_open = open_pg
 
 type User* = object
   user_id*: string
@@ -35,11 +34,8 @@ ON CONFLICT (user_id) DO UPDATE SET user_id = users.user_id
 RETURNING
   user_id
 , TO_JSON(DATE_TRUNC('SECOND', created_at))#>>'{}' AS created_at"""
-  let conn = openDb()
-  try:
+  db_open.use conn:
     fromDbRow conn.getRow(query, userId)
-  finally:
-    close conn
 
 proc usersInGame*(gameId: int): seq[User] =
   let query = sql"""
@@ -49,9 +45,6 @@ SELECT
 FROM users u
 JOIN users_games ug ON ug.game_id = ?
                    AND u.user_id = ug.user_id"""
-  let conn = openDb()
-  try:
+  db_open.use conn:
     let rows = conn.getAllRows(query, gameId)
     rows.map fromDbRow
-  finally:
-    close conn

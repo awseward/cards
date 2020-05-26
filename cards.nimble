@@ -17,6 +17,7 @@ requires "nimassets >= 0.1.0"
 requires "ulid >= 0.3.0"
 
 requires "https://github.com/awseward/heroku_database_url_splitter#90c6f65"
+requires "https://github.com/awseward/nim-junk-drawer#9ff04c5c70b2fe5d24f951f0ff8f408a108ee059"
 
 
 

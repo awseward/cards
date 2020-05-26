@@ -1,4 +1,3 @@
-import db_postgres
 import json
 import options
 import os
@@ -6,6 +5,7 @@ import sequtils
 import strutils
 import times
 
+import ../db
 import ../timeutils
 import ../models/user
 
@@ -23,8 +23,7 @@ type Game* = object
 proc `%`*(datetime: DateTime): JsonNode =
   % $datetime
 
-let databaseUrl = getEnv "DATABASE_URL"
-proc openDb(): DbConn = open("", "", "", databaseUrl)
+let db_open = open_pg
 
 proc fromDbRow(row: Row): Game =
   Game(
@@ -42,15 +41,12 @@ RETURNING
 , created_by_user_id
 """
   let joinGameSql = sql"INSERT INTO users_games (user_id, game_id) VALUES (?, ?)"
-  let conn = openDb()
-  try:
+  db_open.use conn:
     conn.exec sql"BEGIN TRANSACTION"
     let game = fromDbRow conn.getAllRows(createGameSql, creatorId)[0]
     conn.exec(joinGameSql, creatorId, $game.id)
     conn.exec sql"COMMIT"
     game
-  finally:
-    close conn
 
 proc getGameStatus*(game: Game, players: seq[User] = @[]): GameStatus =
   if players.len > 1:
@@ -66,12 +62,9 @@ SELECT
 , created_by_user_id
 FROM games
   """
-  let conn = openDb()
-  try:
+  db_open.use conn:
     let rows = conn.getAllRows query
     rows.map fromDbRow
-  finally:
-    close conn
 
 proc getGamesUserisIn*(userId: string): seq[Game] =
   let query = sql"""
@@ -81,12 +74,9 @@ SELECT
 , created_by_user_id
 FROM games g
 JOIN users_games ug ON ? = ug.user_id AND g.id = ug.game_id"""
-  let conn = openDb()
-  try:
+  db_open.use conn:
     let rows = conn.getAllRows(query, userId)
     rows.map fromDbRow
-  finally:
-    close conn
 
 proc findGame*(id: int): Option[Game] =
   let query = sql"""
@@ -97,35 +87,23 @@ SELECT
 FROM games
 WHERE id = ?
   """
-  let conn = openDb()
-  try:
+  db_open.use conn:
     let rows = conn.getAllRows(query, id)
     if rows.len == 0: none Game
     else:
       some fromDbRow(rows[0])
-  finally:
-    close conn
 
 proc removeUser*(gameId: int, userId: string) =
   let query = sql"DELETE FROM users_games WHERE game_id = ? AND user_id = ?"
-  let conn = openDb()
-  try:
+  db_open.use conn:
     conn.exec(query, $gameId, userId)
-  finally:
-    close conn
 
 proc addUser*(gameId: int, userId: string) =
   let query = sql"INSERT INTO users_games (game_id, user_id) VALUES (?, ?)"
-  let conn = openDb()
-  try:
+  db_open.use conn:
     conn.exec(query, $gameId, userId)
-  finally:
-    close conn
 
 proc deleteGame*(gameId: int) =
   let query = sql"DELETE FROM games WHERE id = ?"
-  let conn = openDb()
-  try:
+  db_open.use conn:
     conn.exec(query, $gameId)
-  finally:
-    close conn
