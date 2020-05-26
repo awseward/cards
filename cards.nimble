@@ -24,6 +24,9 @@ task dev, "Run a dev server":
   # thing. Otherwise it'll run away on you.
   exec "while true; do sleep 1 && find src -type f -name '*.nim' | entr -d -r npm run dev; done"
 
+task dev_ports_cleanup, "If the dev server isn't up, but ports are still taken, use this":
+  exec "lsof -i :35729 -i :5000 | tail -n +2 | awk '{ print $2 }' | xargs kill"
+
 task svelte, "Generate svelte bundle":
   exec "npm run build"
 
