@@ -1,5 +1,6 @@
 <script>
   import { userId } from './stores.js';
+  import ApiInfo from './ApiInfo.svelte';
   import GamePicker from './GamePicker.svelte';
   import GameDisplay from './GameDisplay.svelte';
 
@@ -10,6 +11,7 @@
 <main>
   <p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 
+  <ApiInfo/>
   <p><strong>User ID:</strong> {$userId}</p>
 
   <GamePicker bind:selectedGame bind:refreshGames />
