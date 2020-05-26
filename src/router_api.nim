@@ -5,9 +5,14 @@ import options
 import sequtils
 import strutils
 import ulid
+import tables
 
 import ./models/game
 import ./models/user
+
+import ./statics
+
+const apiInfo* = {"version": pkgVersion, "revision": pkgRevision}.toTable()
 
 proc enrich*(json: JsonNode, game: Game): JsonNode =
   let players = usersInGame game.id
@@ -31,6 +36,9 @@ router api:
     if userId == "_": halt Http401
 
     userId
+
+  get "info":
+    okJson apiInfo
 
   get "games":
     discard requireUserId()
