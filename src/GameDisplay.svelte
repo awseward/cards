@@ -98,9 +98,15 @@
   <p><strong>Selected game:</strong> {game.id}</p>
 
   {#if details}
-    <div class="game-details" class:loading in:fade="{{ duration: 200 }}" out:fade="{{ duration: 500 }}">
-      <strong>Game details:</strong> <pre>{prettyJson(details)}</pre>
-    </div>
+    <details open class="info-outer" class:loading in:fade="{{ duration: 200 }}" out:fade="{{ duration: 500 }}">
+      <summary>
+        <strong>Game {details.id}</strong>
+      </summary>
+      <pre class="info-inner">{prettyJson(details)}</pre>
+    </details>
+
+
+
 
     {#if isUserInGame(details) }
       {#if pendingOrReady}
@@ -121,11 +127,22 @@
 {/if}
 
 <style>
-  .game-details {
+  .info-outer {
     width: 500px;
     margin-left: auto;
     margin-right: auto;
+    padding: 5px;
+    background-color: #CCC;
+  }
+
+  summary {
+    padding: 10px 0px 10px 10px;
+    text-align: left;
+  }
+
+  .info-inner {
     padding: 20px;
+    margin: 0px;
     background-color: #EEE;
     text-align: left;
   }

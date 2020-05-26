@@ -12,7 +12,7 @@
   <p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 
   <ApiInfo/>
-  <p><strong>User ID:</strong> {$userId}</p>
+  <p><strong>Your User ID:</strong> {$userId}</p>
 
   <GamePicker bind:selectedGame bind:refreshGames />
   <GameDisplay bind:game={selectedGame} on:gameDeleted={refreshGames} />

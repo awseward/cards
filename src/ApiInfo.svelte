@@ -21,16 +21,30 @@
   fetchDetails().then(x => details = x);
 </script>
 
-<div class="details" transition:fade="{{ duration: 200 }}">
-  <strong>API Info:</strong> <pre>{prettyJson(details)}</pre>
-</div>
+<details open class="info-outer" transition:fade="{{ duration: 200 }}">
+  <summary>
+    <strong>API Info</strong>
+  </summary>
+  <pre class="info-inner">{prettyJson(details)}</pre>
+</details>
 
 <style>
-  .details {
+  .info-outer {
     width: 500px;
     margin-left: auto;
     margin-right: auto;
+    padding: 5px;
+    background-color: #CCC;
+  }
+
+  summary {
+    padding: 10px 0px 10px 10px;
+    text-align: left;
+  }
+
+  .info-inner {
     padding: 20px;
+    margin: 0px;
     background-color: #EEE;
     text-align: left;
   }
